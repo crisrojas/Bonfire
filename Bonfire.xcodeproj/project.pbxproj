@@ -46,6 +46,7 @@
 		40C121D32B1B44CC000DB578 /* BonfireUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonfireUITests.swift; sourceTree = "<group>"; };
 		40C121D52B1B44CC000DB578 /* BonfireUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonfireUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		40C121E22B1B44D7000DB578 /* Bonfire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonfire.swift; sourceTree = "<group>"; };
+		40C121E42B1B50F7000DB578 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +77,7 @@
 		40C121AC2B1B44CB000DB578 = {
 			isa = PBXGroup;
 			children = (
+				40C121E42B1B50F7000DB578 /* README.md */,
 				40C121B72B1B44CB000DB578 /* Bonfire */,
 				40C121C82B1B44CC000DB578 /* BonfireTests */,
 				40C121D22B1B44CC000DB578 /* BonfireUITests */,
