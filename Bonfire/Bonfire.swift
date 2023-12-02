@@ -16,9 +16,6 @@ import Foundation
 
 import Combine
 
-import SwiftUI
-import Combine
-
 // https://github.com/jimlai586/Bonfire/blob/master/README.md
 protocol Service {
     static var mods: [String: (inout URLRequest) -> Void] {get set}
@@ -209,50 +206,6 @@ enum NetError: Error {
 }
 
 
-public struct Employee: Decodable, Identifiable {
-    public let id: Int
-    let name: String
-    let age: Int
-    let salary: Int
-}
-
-extension Employee {
-    enum CodingKeys: String, CodingKey {
-        case id
-        case name   = "employee_name"
-        case age    = "employee_age"
-        case salary = "employee_salary"
-    }
-}
-
-extension [Employee]: View {
-    public var body: some View {
-        List(self) { item in
-            NavigationLink {
-                item
-            } label: {
-                item.name
-            }
-
-        }
-    }
-}
-
-extension Employee: View {
-    public var body: some View {
-        VStack {
-            HStack {
-                "Name: " + name
-            }
-            HStack {
-                "Age: ".body + age.body
-            }
-            HStack {
-                "Salary: ".body + salary.body
-            }
-        }
-    }
-}
 struct Wrapper<T: Decodable>: Decodable,  NetData {
     var data: [T]?
 }
@@ -636,5 +589,52 @@ extension MJ: HttpBody, NetData {
 
     var body: Data? {
         self.data
+    }
+}
+
+
+public struct Employee: Decodable, Identifiable {
+    public let id: Int
+    let name: String
+    let age: Int
+    let salary: Int
+}
+
+extension Employee {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name   = "employee_name"
+        case age    = "employee_age"
+        case salary = "employee_salary"
+    }
+}
+
+import SwiftUI
+extension [Employee]: View {
+    public var body: some View {
+        List(self) { item in
+            NavigationLink {
+                item
+            } label: {
+                item.name
+            }
+
+        }
+    }
+}
+
+extension Employee: View {
+    public var body: some View {
+        VStack {
+            HStack {
+                "Name: " + name
+            }
+            HStack {
+                "Age: ".body + age.body
+            }
+            HStack {
+                "Salary: ".body + salary.body
+            }
+        }
     }
 }
