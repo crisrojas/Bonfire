@@ -220,13 +220,13 @@ public final class Employee: Resource {
     
     var list: [(id: Int, name: String)] {
         container.map {
-            (id: $0[P.id].intValue, name: $0[P.employee_name].stringValue)
+            (id: $0[EK.id].intValue, name: $0[EK.name].stringValue)
         }
     }
     
     /// Testing this so we can use it on swiftui
     var listBis: [Int:MJ] {
-        Dictionary(uniqueKeysWithValues: container.map { ($0[P.id].intValue, $0) })
+        Dictionary(uniqueKeysWithValues: container.map { ($0[EK.id].intValue, $0) })
     }
 }
 
@@ -240,10 +240,6 @@ typealias P = Params
 enum Params: String, JSONKey {
     var jkey: String { self.rawValue }
     case data
-    case id
-    case employee_name
-    case employee_age
-    case employee_salary
 }
 
 typealias EK = EmployeeKeys
