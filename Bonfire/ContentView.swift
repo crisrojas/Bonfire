@@ -45,8 +45,13 @@ struct ContentView: View {
         if employees.list.isEmpty {
             "No data found"
         } else {
-            List(employees.list, id: \.id) { item in
-                item.name
+            List(employees.listBis.tuples(), id: \.id) { item in
+                let name   = item.value[EK.name  ].stringValue
+                let age    = item.value[EK.age   ].intValue
+                let salary = item.value[EK.salary].intValue
+                NavigationLink(name) {
+                    EmployeeDetail(name: name, age: age, salary: salary)
+                }
             }
         }
     }
@@ -58,7 +63,35 @@ struct ContentView: View {
         }
     }
 }
- 
+
+struct EmployeeDetail {
+    let name: String
+    let age: Int
+    let salary: Int
+}
+
+extension EmployeeDetail: View {
+    var body: some View {
+        VStack {
+            HStack {
+                "Age: ".body + age.body
+            }
+            HStack {
+                "Name: " + name
+            }
+            HStack {
+                "Salary ".body + salary.body
+            }
+        }
+    }
+}
+
+extension Int: View {
+    public var body: Text {
+        Text(description)
+    }
+}
+
 struct SymbolButton: View {
     let systemName: String
     let action: () -> Void
@@ -77,7 +110,7 @@ struct SymbolButton: View {
 }
 
 extension String: View {
-    public var body: some View {
+    public var body: Text {
         Text(self)
     }
 }

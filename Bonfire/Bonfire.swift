@@ -71,6 +71,30 @@ protocol NetData {
 
 typealias Request<T> = AnyPublisher<(T, HTTPURLResponse), Error>
 
+/// @question: What if we need some other actions for a resource ? POST/PUT/PATCH
+///  Use the load(using:) method:
+final class TodoResource: Resource {
+    var cancellable: AnyCancellable?
+    static var mods = [String : (Request<MJ>) -> Request<MJ>]()
+    var url: String = "test"
+    var error: Error?
+    var response: HTTPURLResponse?
+    var contentType = "application/json"
+
+    @Published var data = MJ.raw("data")
+}
+
+let todos = TodoResource()
+struct TodoPOST: HttpBody, Encodable {
+    let title: String
+    let notes: String
+    var isChecked = false
+    var body: Data? { try? JSONEncoder().encode(self) }
+}
+
+let postRequest = todos.request(.post, TodoPOST(title: "Buy apples", notes: "freaking love 🍎s"))
+let POST = todos.load(using: postRequest)
+
 protocol Resource: ObservableObject {
     associatedtype ResourceType: NetData
     static var mods: [String: (Request<ResourceType>) -> Request<ResourceType>] {get set}
@@ -90,6 +114,12 @@ protocol Resource: ObservableObject {
 }
 
 extension Resource {
+    
+    /// @question: Why having a default value for this?
+    /// If we want to move this logic to a common reusable library, wouldn't that mean that the Resource is coupled to a concrete implementation?
+    /// Nope -> I think this static can be removed if moved in a library and added on the importer module through protocol extension.
+    /// Still, that would make the Resource only work with a data api, if we have more than one api in the app I believe we should modifiy this to not be a static
+    /// so it can be passed to a given resource on instantiation/configuration (through property override)
     static var service: Service {
         API()
     }
@@ -98,22 +128,29 @@ extension Resource {
         r.addValue(contentType, forHTTPHeaderField: "Content-Type")
         return r
     }
+    
     func request(_ method: HttpMethod = .post, _ payload: HttpBody? = nil) -> Request<ResourceType> {
         var r = urlRequestBase
         r.httpMethod = method.rawValue.capitalized
         r.httpBody = payload?.body
+        
+        /// @question: Example usage of mods appended through the decorated method on service?
         let req = Self.service.decorated(r.url?.absoluteString ?? "",  r)
         return URLSession.shared.dataTaskPublisher(for: req).tryMap {
             (data, response) in
             guard let resp = response as? HTTPURLResponse, 200 ..< 300 ~= resp.statusCode else {
                 throw NetError.errorResponse
             }
+            
+            /// @question: Why not using decodable directly ?
+            /// Guess we use NetData protocol so we can have the flexibility for use MagicJSON if wanted
             guard let d = ResourceType.decode(data) else {
                 throw NetError.decodeError
             }
             return (d, resp)
         }.eraseToAnyPublisher()
     }
+    
     @discardableResult
     func load(using req: Request<ResourceType>) -> Callback<ResourceType> {
         let cb = Callback<ResourceType>()
@@ -144,6 +181,13 @@ extension Resource {
     }
 }
 
+/// @question: couldn't we just have two callbacks:
+/// onSuccess & onFailure and return Self so we can handle both cases?
+/// Something like
+/// myResource.load().onSucesss { _ in }.onFailure { print("failed") }
+/// Isn't that necessary to handle both cases?
+/// Or maybe we could just have the state in resource itself published so view can listen and act,
+/// that way we could havbe only the "completiion" callback and remove the onSuccess & onFailure ones
 final class Callback<T> {
     var completion: (() -> Void)?
     var success: ((T) -> Void)?
@@ -179,6 +223,17 @@ public final class Employee: Resource {
             (id: $0[P.id].intValue, name: $0[P.employee_name].stringValue)
         }
     }
+    
+    /// Testing this so we can use it on swiftui
+    var listBis: [Int:MJ] {
+        Dictionary(uniqueKeysWithValues: container.map { ($0[P.id].intValue, $0) })
+    }
+}
+
+extension Dictionary {
+    func tuples() -> [(id: Key, value: Value)] {
+        map { (id: $0.key, value: $0.value)}
+    }
 }
 
 typealias P = Params
@@ -187,6 +242,17 @@ enum Params: String, JSONKey {
     case data
     case id
     case employee_name
+    case employee_age
+    case employee_salary
+}
+
+typealias EK = EmployeeKeys
+enum EmployeeKeys: String, JSONKey {
+    var jkey: String { self.rawValue }
+    case id
+    case name   = "employee_name"
+    case age    = "employee_age"
+    case salary = "employee_salary"
 }
 
 public protocol JSONKey {
