@@ -53,7 +53,8 @@ extension Service {
 public final class API: Service {
     static var mods = [String : (inout URLRequest) -> Void]()
     var baseURL = "https://crisrojas.github.io/dummyjson/api/v1/"
-    let employees = Employee()
+    let employees = EmployeesResource()
+    let employeesCodable = EmployeesCodableResource()
 }
 
 enum HttpMethod: String {
@@ -65,7 +66,7 @@ protocol HttpBody {
 }
 
 protocol NetData {
-    init()
+//    init()
     static func decode(_ data: Data) -> Self?
 }
 
@@ -207,7 +208,82 @@ enum NetError: Error {
     case errorResponse, decodeError
 }
 
-public final class Employee: Resource {
+
+public struct Employee: Decodable, Identifiable {
+    public let id: Int
+    let name: String
+    let age: Int
+    let salary: Int
+}
+
+extension Employee {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name   = "employee_name"
+        case age    = "employee_age"
+        case salary = "employee_salary"
+    }
+}
+
+extension [Employee]: View {
+    public var body: some View {
+        List(self) { item in
+            NavigationLink {
+                item
+            } label: {
+                item.name
+            }
+
+        }
+    }
+}
+
+extension Employee: View {
+    public var body: some View {
+        VStack {
+            HStack {
+                "Name: " + name
+            }
+            HStack {
+                "Age: ".body + age.body
+            }
+            HStack {
+                "Salary: ".body + salary.body
+            }
+        }
+    }
+}
+struct Wrapper<T: Decodable>: Decodable,  NetData {
+    var data: [T]?
+}
+
+typealias AppRequest<T: Decodable> = Request<Wrapper<T>>
+
+fileprivate var jsonDecoder: JSONDecoder = {
+  let d = JSONDecoder()
+//    d.keyDecodingStrategy = .convertFromSnakeCase // wont working because we aren't mapping to "name" instead of "employeeName".
+    return d
+}()
+
+extension Decodable {
+    static func decode(_ data: Data) -> Self? {
+        try? jsonDecoder.decode(Self.self, from: data)
+    }
+}
+
+public final class EmployeesCodableResource: Resource {
+    var cancellable: AnyCancellable?
+    static var mods = [String : (AppRequest<Employee>) -> AppRequest<Employee>]()
+    var url: String = "employees"
+    var error: Error?
+    var response: HTTPURLResponse?
+    var contentType = "application/json"
+
+    @Published var data = Wrapper<Employee>()
+    var employes: [Employee] {data.data ?? []}
+}
+
+public final class EmployeesResource: Resource {
     var cancellable: AnyCancellable?
     static var mods = [String : (Request<MJ>) -> Request<MJ>]()
     var url: String = "employees"

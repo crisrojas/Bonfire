@@ -11,7 +11,7 @@ import SwiftUI
 struct BonfireApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            EmployeesList()
         }
     }
 }

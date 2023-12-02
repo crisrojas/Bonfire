@@ -10,6 +10,19 @@ import SwiftUI
 
 let api = API()
 
+
+struct EmployeesList: View {
+    @ObservedObject var resource = api.employeesCodable
+    var body: some View {
+        NavigationView {
+            resource.employes
+                .onAppear {
+                    resource.load()
+                }
+        }
+    }
+}
+
 struct ContentView: View {
     @ObservedObject var employees = api.employees
     @State var isLoading = true
