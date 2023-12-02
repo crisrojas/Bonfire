@@ -53,7 +53,7 @@ extension Service {
 public final class API: Service {
     static var mods = [String : (inout URLRequest) -> Void]()
     var baseURL = "https://crisrojas.github.io/dummyjson/api/v1/"
-    let employes = JSON("employees")
+    let employees = Employee()
 }
 
 enum HttpMethod: String {
@@ -163,13 +163,12 @@ enum NetError: Error {
     case errorResponse, decodeError
 }
 
-public final class JSON: Resource {
-
+public final class Employee: Resource {
     var cancellable: AnyCancellable?
 
     static var mods = [String : (Request<MJ>) -> Request<MJ>]()
 
-    var url: String
+    var url: String = "employees"
 
     var error: Error?
 
@@ -177,17 +176,20 @@ public final class JSON: Resource {
 
     var contentType = "application/json"
 
-    @Published var data = MJ.raw("data") {
-        didSet {
-            print(data[0])
+    @Published var data = MJ.raw("data")
+    
+    var list: [(id: Int, name: String)] {
+        data["data"].arrayValue.map {
+            (id: $0["id"].intValue, name: $0["employee_name"].stringValue)
         }
-    }
-
-    public init(_ relURL: String) {
-        url = relURL
+        
     }
 }
 
+enum Params: String, JSONKey {
+    var jkey: String { self.rawValue }
+    case data
+}
 
 public protocol JSONKey {
     var jkey: String {get}
