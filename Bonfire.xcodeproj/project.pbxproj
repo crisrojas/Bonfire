@@ -14,6 +14,7 @@
 		40C121CA2B1B44CC000DB578 /* BonfireTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C121C92B1B44CC000DB578 /* BonfireTests.swift */; };
 		40C121D42B1B44CC000DB578 /* BonfireUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C121D32B1B44CC000DB578 /* BonfireUITests.swift */; };
 		40C121D62B1B44CC000DB578 /* BonfireUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C121D52B1B44CC000DB578 /* BonfireUITestsLaunchTests.swift */; };
+		40C121E32B1B44D7000DB578 /* Bonfire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C121E22B1B44D7000DB578 /* Bonfire.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		40C121CF2B1B44CC000DB578 /* BonfireUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BonfireUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		40C121D32B1B44CC000DB578 /* BonfireUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonfireUITests.swift; sourceTree = "<group>"; };
 		40C121D52B1B44CC000DB578 /* BonfireUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonfireUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		40C121E22B1B44D7000DB578 /* Bonfire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonfire.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 			children = (
 				40C121B82B1B44CB000DB578 /* BonfireApp.swift */,
 				40C121BA2B1B44CB000DB578 /* ContentView.swift */,
+				40C121E22B1B44D7000DB578 /* Bonfire.swift */,
 				40C121BC2B1B44CC000DB578 /* Assets.xcassets */,
 				40C121BE2B1B44CC000DB578 /* Preview Content */,
 			);
@@ -258,6 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				40C121BB2B1B44CB000DB578 /* ContentView.swift in Sources */,
+				40C121E32B1B44D7000DB578 /* Bonfire.swift in Sources */,
 				40C121B92B1B44CB000DB578 /* BonfireApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

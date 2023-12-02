@@ -7,15 +7,17 @@
 
 import SwiftUI
 
+
+let api = API()
 struct ContentView: View {
+    @ObservedObject var profile = api.employes
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            Text(profile.data.description)
+            Button("refresh") {
+                profile.load()
+            }
         }
-        .padding()
     }
 }
 
