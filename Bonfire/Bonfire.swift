@@ -165,30 +165,28 @@ enum NetError: Error {
 
 public final class Employee: Resource {
     var cancellable: AnyCancellable?
-
     static var mods = [String : (Request<MJ>) -> Request<MJ>]()
-
     var url: String = "employees"
-
     var error: Error?
-
     var response: HTTPURLResponse?
-
     var contentType = "application/json"
 
     @Published var data = MJ.raw("data")
+    private var container: [MJ] {data[P.data].arrayValue}
     
     var list: [(id: Int, name: String)] {
-        data["data"].arrayValue.map {
-            (id: $0["id"].intValue, name: $0["employee_name"].stringValue)
+        container.map {
+            (id: $0[P.id].intValue, name: $0[P.employee_name].stringValue)
         }
-        
     }
 }
 
+typealias P = Params
 enum Params: String, JSONKey {
     var jkey: String { self.rawValue }
     case data
+    case id
+    case employee_name
 }
 
 public protocol JSONKey {
