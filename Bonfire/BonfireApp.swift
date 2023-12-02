@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct BonfireApp: App {
+    @ObservedObject var resource = api.employeesCodable
     var body: some Scene {
         WindowGroup {
-            EmployeesList()
+            resource
+                .employes
+                .onAppear(perform: {resource.load()})
+                .insideNavView()
         }
     }
 }

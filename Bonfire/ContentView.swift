@@ -10,16 +10,9 @@ import SwiftUI
 
 let api = API()
 
-
-struct EmployeesList: View {
-    @ObservedObject var resource = api.employeesCodable
-    var body: some View {
-        NavigationView {
-            resource.employes
-                .onAppear {
-                    resource.load()
-                }
-        }
+extension View {
+    func insideNavView() -> some View {
+        NavigationView {self}
     }
 }
 
